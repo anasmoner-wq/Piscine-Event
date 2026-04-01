@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Spin & Win – Piscine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║         GOOGLE SHEETS SETUP — READ BEFORE EVENT             ║
+  ╠══════════════════════════════════════════════════════════════╣
+  ║ 1. Open Google Sheets → create a new sheet                   ║
+  ║ 2. Go to Extensions → Apps Script                            ║
+  ║ 3. Replace default code with:                                ║
+  ║                                                               ║
+  ║   function doGet(e) {                                         ║
+  ║     const sheet =                                            ║
+  ║       SpreadsheetApp.getActiveSpreadsheet()                  ║
+  ║         .getActiveSheet();                                   ║
+  ║     const p = e.parameter;                                   ║
+  ║     sheet.appendRow([                                        ║
+  ║       p.timestamp, p.name, p.email,                          ║
+  ║       p.phone, p.prize, p.event                              ║
+  ║     ]);                                                      ║
+  ║     return ContentService                                    ║
+  ║       .createTextOutput('ok');                               ║
+  ║   }                                                          ║
+  ║                                                               ║
+  ║ 4. Deploy → New deployment → Web App                         ║
+  ║    → Execute as: Me → Who has access: Anyone                 ║
+  ║ 5. Copy the Web App URL                                      ║
+  ║ 6. Click the game title 5× to open the config panel         ║
+  ║ 7. Paste the URL and save — data will sync live!             ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+/* ───────────────────────────────────────
+   BRAND VARIABLES — swap when you have company colors
+   ─────────────────────────────────────── */
+:root {
+  --brand-a:   #FF6B00;
+  --brand-b:   #FFB300;
+  --brand-glow: rgba(255, 107, 0, 0.45);
+
+  --bg:        #07070F;
+  --surface:   #0D0D1E;
+  --glass:     rgba(13, 13, 30, 0.85);
+  --border:    rgba(255, 107, 0, 0.18);
+  --text:      #F0F0FF;
+  --muted:     #55558A;
+
+  /* Wheel segment colors */
+  --c0: #7B2FFF;
+  --c1: #B8860B;
+  --c2: #0097A7;
+  --c3: #D81B60;
+  --c4: #E65100;
+  --c5: #37474F;
+  --c6: #2E7D32;
+
+  --font-display: 'Righteous', cursive;
+  --font-body:    'Rajdhani', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,107,0,0.08) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.02) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.02) 40px);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── HEADER ── */
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 10;
+  background: linear-gradient(to bottom, var(--bg) 50%, transparent);
+}
+
+#company-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+#tagline {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── MAIN ── */
+#main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding-top: 70px;
+}
+
+/* ── WHEEL ── */
+#wheel-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pointer {
+  width: 0; height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 30px solid var(--brand-a);
+  filter: drop-shadow(0 0 8px var(--brand-a)) drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  z-index: 5;
+  margin-bottom: -6px;
+}
+
+#wheel-canvas {
+  display: block;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(255,107,0,0.25),
+    0 0 40px rgba(255,107,0,0.2),
+    0 0 100px rgba(255,107,0,0.1),
+    inset 0 0 40px rgba(0,0,0,0.5);
+}
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--font-display);
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+}
+.btn:active { transform: scale(0.95); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.btn-main {
+  padding: 16px 52px;
+  font-size: 1.35rem;
+  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+  color: #000;
+  box-shadow: 0 0 24px var(--brand-glow), 0 4px 16px rgba(0,0,0,0.5);
+}
+.btn-main:not(:disabled):hover {
+  box-shadow: 0 0 40px var(--brand-glow), 0 4px 24px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+
+.btn-spin-again {
+  padding: 16px 44px;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, #00C853, #00E676);
+  color: #000;
+  box-shadow: 0 0 24px rgba(0,200,83,0.5);
+  animation: pulsate 1.8s ease-in-out infinite;
+  width: 100%;
+}
+@keyframes pulsate {
+  0%,100% { box-shadow: 0 0 24px rgba(0,200,83,0.4); }
+  50%      { box-shadow: 0 0 50px rgba(0,200,83,0.8); }
+}
+
+.btn-form {
+  padding: 15px 32px;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+  color: #000;
+  width: 100%;
+  box-shadow: 0 4px 20px var(--brand-glow);
+}
+
+.btn-ghost {
+  padding: 10px 20px;
+  font-size: 0.8rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-ghost:hover { border-color: var(--brand-a); color: var(--brand-a); }
+
+/* ── SUBTITLE ── */
+#subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── OVERLAYS ── */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(7, 7, 15, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: overlayIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.overlay.active { display: flex; }
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255,107,0,0.15), 0 24px 64px rgba(0,0,0,0.6);
+  animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.modal-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 12px; }
+.modal h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.modal p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.prize-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  padding: 10px 24px;
+  border-radius: 6px;
+  margin: 8px 0 20px;
+  box-shadow: 0 0 24px var(--brand-glow);
+}
+
+/* ── FORM ── */
+.field { margin-bottom: 14px; text-align: left; }
+.field label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus  { border-color: var(--brand-a); }
+.field input.err    { border-color: #FF1744; }
+.field .errmsg {
+  font-size: 0.78rem;
+  color: #FF5252;
+  margin-top: 5px;
+  display: none;
+}
+.field .errmsg.show { display: block; }
+
+/* ── THANK YOU / COUNTDOWN ── */
+#countdown-ring {
+  position: relative;
+  width: 64px; height: 64px;
+  margin: 16px auto 8px;
+}
+#countdown-ring svg { transform: rotate(-90deg); }
+#countdown-ring circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+#countdown-ring .track { stroke: rgba(255,255,255,0.1); }
+#countdown-ring .progress { stroke: var(--brand-a); }
+#countdown-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--brand-b);
+}
+
+/* ── GOOD LUCK ── */
+#overlay-goodluck .modal h2 { color: var(--muted); }
+
+/* ── CONFIG PANEL ── */
+#config-panel {
+  display: none;
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+  z-index: 200;
+  width: 320px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+#config-panel h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--brand-a);
+  margin-bottom: 14px;
+}
+#config-panel label {
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 5px;
+}
+#config-panel input {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  margin-bottom: 12px;
+}
+.cfg-row { display: flex; gap: 8px; margin-top: 4px; }
+.btn-save-cfg {
+  flex: 2;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  border: none; border-radius: 6px; cursor: pointer;
+}
+.btn-clear-cfg {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255,23,68,0.15);
+  color: #FF5252;
+  border: 1px solid rgba(255,23,68,0.3);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  border-radius: 6px; cursor: pointer;
+}
+#config-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ── PARTICLES ── */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99;
+  animation: ptfall linear forwards;
+}
+@keyframes ptfall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div id="company-title">🎯 SPIN &amp; WIN</div>
+  <div id="tagline">Piscine Edition</div>
+</header>
+
+<div id="main">
+  <div id="wheel-area">
+    <div id="pointer"></div>
+    <canvas id="wheel-canvas" width="460" height="460"></canvas>
+  </div>
+  <p id="subtitle">Spin the wheel · Win a Piscine discount</p>
+  <button class="btn btn-main" id="btn-spin">🎰 &nbsp;SPIN THE WHEEL</button>
+</div>
+
+<!-- ── SPIN AGAIN OVERLAY ── -->
+<div class="overlay" id="overlay-spin-again">
+  <div class="modal">
+    <div class="modal-icon" style="animation:bounceIcon 0.7s ease-in-out infinite alternate">🔄</div>
+    <h2 style="background:linear-gradient(135deg,#00C853,#00E676);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent">SPIN AGAIN!</h2>
+    <p>The wheel is calling your name — try one more time!</p>
+    <button class="btn btn-spin-again" id="btn-do-spin-again">SPIN AGAIN 🎰</button>
+  </div>
+</div>
+<style>
+@keyframes bounceIcon {
+  from { transform: translateY(-6px) rotate(-15deg); }
+  to   { transform: translateY(6px)  rotate(15deg); }
+}
+</style>
+
+<!-- ── PRIZE + FORM OVERLAY ── -->
+<div class="overlay" id="overlay-form">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h2>YOU WON!</h2>
+    <div class="prize-badge" id="form-prize-label">—</div>
+    <p style="margin-bottom:16px">Enter your details below to claim your prize:</p>
+
+    <div class="field">
+      <label>Full Name</label>
+      <input id="inp-name" type="text" placeholder="e.g. Ahmed Mohamed" autocomplete="off">
+      <div class="errmsg" id="err-name">Please enter your full name</div>
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input id="inp-email" type="email" placeholder="e.g. ahmed@example.com" autocomplete="off">
+      <div class="errmsg" id="err-email">Please enter a valid email</div>
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input id="inp-phone" type="tel" placeholder="e.g. +20 100 000 0000" autocomplete="off">
+      <div class="errmsg" id="err-phone">Please enter your phone number (min 8 digits)</div>
+    </div>
+
+    <button class="btn btn-form" id="btn-claim">✅ &nbsp;CLAIM MY PRIZE</button>
+  </div>
+</div>
+
+<!-- ── GOOD LUCK OVERLAY ── -->
+<div class="overlay" id="overlay-goodluck">
+  <div class="modal">
+    <div class="modal-icon">🌟</div>
+    <h2>GOOD LUCK!</h2>
+    <p style="font-size:1rem;color:var(--text);margin-bottom:6px">Better luck next time!</p>
+    <p>Our Piscine program is an amazing challenge — even without a discount it's worth every moment. Come ask us about it!</p>
+    <button class="btn btn-form" id="btn-goodluck-ok" style="margin-top:8px">GOT IT 👍</button>
+  </div>
+</div>
+
+<!-- ── THANK YOU OVERLAY ── -->
+<div class="overlay" id="overlay-thanks">
+  <div class="modal">
+    <div class="modal-icon" id="thanks-icon">✅</div>
+    <h2 style="background:linear-gradient(135deg,var(--brand-a),var(--brand-b));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent">ALL SET!</h2>
+    <p>Your prize has been registered. Our team will reach out soon — good luck with the Piscine!</p>
+    <div id="countdown-ring">
+      <svg viewBox="0 0 64 64" width="64" height="64">
+        <circle class="track" cx="32" cy="32" r="28"/>
+        <circle class="progress" id="countdown-circle" cx="32" cy="32" r="28"
+          stroke-dasharray="175.9" stroke-dashoffset="0"/>
+      </svg>
+      <div id="countdown-num">8</div>
+    </div>
+    <p style="font-size:0.78rem;margin-top:4px">Resetting for next visitor…</p>
+  </div>
+</div>
+
+<!-- ── ALREADY PLAYED OVERLAY ── -->
+<div class="overlay" id="overlay-already">
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h2 style="color:#FF5252">ALREADY PLAYED</h2>
+    <p>This phone number has already been used to claim a prize. Each person gets one spin!</p>
+    <button class="btn btn-form" id="btn-already-ok" style="background:#FF5252;box-shadow:0 0 20px rgba(255,82,82,0.3)">OK</button>
+  </div>
+</div>
+
+<!-- ── CONFIG PANEL (staff-only, 5× title click) ── -->
+<div id="config-panel">
+  <h3>⚙ STAFF CONFIG</h3>
+  <label>Google Apps Script URL</label>
+  <input id="inp-sheets-url" type="url" placeholder="https://script.google.com/a/macros/nextera.education/s/AKfycbyGwA9SuMPw5iCx_rFIgPiXH-Kh5dWvD4j6zuN0WiaE8ntPRyafkuHR4ODe2HAQ3zMM/exec">
+  <label>Carrer Summit</label>
+  <input id="inp-event-name" type="text" placeholder="Carrer Summit 2026">
+  <div class="cfg-row">
+    <button class="btn-save-cfg" id="btn-save-config">SAVE</button>
+    <button class="btn-clear-cfg" id="btn-clear-data">CLEAR</button>
+  </div>
+  <p id="config-hint">
+    Paste your Apps Script Web App URL above to enable live Google Sheets sync.<br>
+    Click the title 5× to open / close this panel.<br>
+    CLEAR removes all recorded phone numbers from this device.
+  </p>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+// SEGMENTS CONFIG
+// ═══════════════════════════════════════════════════════
+const SEGMENTS = [
+  { label:'10% Discount',        badge:'10% OFF',      weight:20, color:'#7B2FFF', dark:'#5B1FCC' },
+  { label:'Free Piscine! 🌟',    badge:'FREE PISCINE', weight:0,  color:'#C8A000', dark:'#9A7A00' },
+  { label:'20% Discount',        badge:'20% OFF',      weight:8,  color:'#0097A7', dark:'#006978' },
+  { label:'50% Discount',        badge:'50% OFF',      weight:2,  color:'#D81B60', dark:'#A4004F' },
+  { label:'5% Discount',         badge:'5% OFF',       weight:30, color:'#E65100', dark:'#BF360C' },
+  { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:30, color:'#37474F', dark:'#263238' },
+  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:10, color:'#2E7D32', dark:'#1B5E20' },
+];
+
+const N     = SEGMENTS.length;
+const ARC   = (2 * Math.PI) / N;
+const TOP   = -Math.PI / 2;   // pointer angle in canvas coords
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let rotation   = 0;
+let spinning   = false;
+let result     = null;
+
+let sheetsURL    = localStorage.getItem('sheetsURL')  || '';
+let eventName    = localStorage.getItem('eventName')  || 'Piscine Event';
+let playedPhones = JSON.parse(localStorage.getItem('playedPhones') || '[]');
+
+// ═══════════════════════════════════════════════════════
+// CANVAS
+// ═══════════════════════════════════════════════════════
+const canvas = document.getElementById('wheel-canvas');
+const ctx    = canvas.getContext('2d');
+const CX = canvas.width  / 2;
+const CY = canvas.height / 2;
+const R  = CX - 14;
+
+function drawWheel(rot) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Outer ring glow
+  const outerGlow = ctx.createRadialGradient(CX, CY, R-2, CX, CY, R+14);
+  outerGlow.addColorStop(0, 'rgba(255,107,0,0.25)');
+  outerGlow.addColorStop(1, 'transparent');
+  ctx.beginPath();
+  ctx.arc(CX, CY, R + 14, 0, Math.PI * 2);
+  ctx.fillStyle = outerGlow;
+  ctx.fill();
+
+  for (let i = 0; i < N; i++) {
+    const seg  = SEGMENTS[i];
+    const sa   = rot + i * ARC;
+    const ea   = sa + ARC;
+    const mid  = sa + ARC / 2;
+
+    // Segment fill
+    ctx.beginPath();
+    ctx.moveTo(CX, CY);
+    ctx.arc(CX, CY, R, sa, ea);
+    ctx.closePath();
+
+   const grad = ctx.createLinearGradient(0, 0, R, 0); 
+grad.addColorStop(0, seg.color);
+grad.addColorStop(1, seg.dark);
+ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Divider line
+    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Text
+    // Replace the Text section inside your for-loop with this:
+ctx.save();
+ctx.translate(CX, CY);
+ctx.rotate(mid);
+
+// 1. Draw Emoji (Right side of the segment)
+ctx.font = '22px serif';
+ctx.textAlign = 'right';
+ctx.textBaseline = 'middle';
+ctx.fillStyle = '#FFFFFF';
+ctx.fillText(getEmoji(seg), R - 20, 0);
+
+// 2. Draw Label (Left side of the segment)
+const fontSize = seg.badge.length > 10 ? 12 : 14;
+ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
+ctx.textAlign = 'left';
+ctx.textBaseline = 'middle';
+ctx.fillStyle = '#FFFFFF';
+// Add a small shadow for readability
+ctx.shadowColor = "rgba(0,0,0,0.5)";
+ctx.shadowBlur = 4;
+ctx.fillText(seg.badge, 45, 0); // 45px from center to avoid the center cap
+
+ctx.restore();
+  }
+
+  // Center cap
+  const capGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, 36);
+  capGrad.addColorStop(0, '#1A0A30');
+  capGrad.addColorStop(1, '#07070F');
+  ctx.beginPath();
+  ctx.arc(CX, CY, 36, 0, Math.PI * 2);
+  ctx.fillStyle = capGrad;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(CX, CY, 36, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,107,0,0.5)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.font      = '24px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor  = 'rgba(255,107,0,0.8)';
+  ctx.shadowBlur   = 10;
+  ctx.fillStyle    = '#FFF';
+  ctx.fillText('🎯', CX, CY);
+  ctx.shadowBlur   = 0;
+}
+
+function getEmoji(seg) {
+  if (seg.weight === 0)       return '🏆';
+  if (seg.label.includes('50'))  return '💎';
+  if (seg.label.includes('20'))  return '🎁';
+  if (seg.label.includes('10'))  return '🎫';
+  if (seg.label.includes('5%'))  return '🎟';
+  if (seg.label.includes('Spin')) return '🔄';
+  return '🌟';
+}
+
+function lighten(hex, amt) {
+  const n = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, (n >> 16) + amt);
+  const g = Math.min(255, ((n >> 8) & 0xff) + amt);
+  const b = Math.min(255, (n & 0xff) + amt);
+  return `rgb(${r},${g},${b})`;
+}
+
+// Initial draw
+drawWheel(rotation);
+
+// ═══════════════════════════════════════════════════════
+// WEIGHTED RANDOM
+// ═══════════════════════════════════════════════════════
+function pickWinner() {
+  const pool  = SEGMENTS.filter(s => s.weight > 0);
+  const total = pool.reduce((s, x) => s + x.weight, 0);
+  let r = Math.random() * total;
+  for (const seg of pool) {
+    r -= seg.weight;
+    if (r <= 0) return SEGMENTS.indexOf(seg);
+  }
+  return SEGMENTS.indexOf(pool[pool.length - 1]);
+}
+
+// ═══════════════════════════════════════════════════════
+// SPIN
+// ═══════════════════════════════════════════════════════
+function doSpin() {
+  if (spinning) return;
+  spinning = true;
+  document.getElementById('btn-spin').disabled = true;
+  resumeAudio();
+
+  const winIdx = pickWinner();
+  result = SEGMENTS[winIdx];
+
+  // Calculate how much to rotate so winIdx lands under pointer (TOP)
+  const segMid  = winIdx * ARC + ARC / 2;
+  const jitter  = (Math.random() - 0.5) * ARC * 0.55;
+  const target  = ((TOP - segMid - jitter) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+  const current = ((rotation % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+  let   extra   = target - current;
+  if (extra < 0) extra += Math.PI * 2;
+
+  const fullSpins = (7 + Math.floor(Math.random() * 3)) * Math.PI * 2;
+  const totalDelta = fullSpins + extra;
+  const startRot  = rotation;
+  const endRot    = rotation + totalDelta;
+  const duration  = 5500 + Math.random() * 1200;
+  const startTime = performance.now();
+
+  let lastTick = rotation;
+
+  function easeOut(t) {
+    // quartic ease-out for satisfying deceleration
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function frame(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const e = easeOut(t);
+    rotation = startRot + e * totalDelta;
+    drawWheel(rotation);
+
+    // Tick every segment crossing (speed-aware)
+    if (Math.abs(rotation - lastTick) >= ARC) {
+      playTick(Math.max(0.08, 1 - t));
+      lastTick = rotation;
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      rotation = endRot;
+      drawWheel(rotation);
+      spinning = false;
+      onResult();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function onResult() {
+  if (result.label === 'Spin Again') {
+    playSound('spin-again');
+    showOverlay('overlay-spin-again');
+  } else if (result.label === 'Good Luck Next Time') {
+    playSound('lose');
+    showOverlay('overlay-goodluck');
+  } else {
+    playSound('win');
+    document.getElementById('form-prize-label').textContent = result.label;
+    showOverlay('overlay-form');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AUDIO (Web Audio API)
+// ═══════════════════════════════════════════════════════
+let audioCtx = null;
+
+function resumeAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTick(vol = 1) {
+  if (!audioCtx) return;
+  try {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type = 'triangle';
+    o.frequency.value = 500 + Math.random() * 300;
+    g.gain.setValueAtTime(vol * 0.25, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+    o.start(audioCtx.currentTime);
+    o.stop(audioCtx.currentTime + 0.04);
+  } catch(e) {}
+}
+
+function playSound(type) {
+  if (!audioCtx) return;
+  try {
+    if (type === 'win') {
+      // Ascending happy arpeggio
+      [523, 659, 784, 1047].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.type = 'sine'; o.frequency.value = freq;
+        const t = audioCtx.currentTime + i * 0.14;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.35, t + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+        o.start(t); o.stop(t + 0.5);
+      });
+    } else if (type === 'spin-again') {
+      // Fast rising notes
+      [659, 784, 880, 1047, 1175].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.type = 'sine'; o.frequency.value = freq;
+        const t = audioCtx.currentTime + i * 0.08;
+        g.gain.setValueAtTime(0.3, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        o.start(t); o.stop(t + 0.25);
+      });
+    } else {
+      // Sad descending trombone-ish
+      [400, 360, 300].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.type = 'sawtooth'; o.frequency.value = freq;
+        const t = audioCtx.currentTime + i * 0.2;
+        g.gain.setValueAtTime(0.18, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+        o.start(t); o.stop(t + 0.3);
+      });
+    }
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+// OVERLAYS
+// ═══════════════════════════════════════════════════════
+function showOverlay(id) {
+  document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active'));
+  if (id) document.getElementById(id).classList.add('active');
+}
+function hideOverlays() {
+  document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active'));
+}
+
+// ═══════════════════════════════════════════════════════
+// FORM & SUBMISSION
+// ═══════════════════════════════════════════════════════
+function validate() {
+  let ok = true;
+  const name  = document.getElementById('inp-name').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const phone = document.getElementById('inp-phone').value.replace(/\s+/g,'');
+
+  const set = (id, inputId, pass) => {
+    document.getElementById(inputId).classList.toggle('err', !pass);
+    document.getElementById(id).classList.toggle('show', !pass);
+    if (!pass) ok = false;
+  };
+
+  set('err-name',  'inp-name',  name.length >= 2);
+  set('err-email', 'inp-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  set('err-phone', 'inp-phone', phone.replace(/\D/g,'').length >= 8);
+
+  return ok ? { name, email, phone } : null;
+}
+
+async function submitEntry(data) {
+  const raw = data.phone.replace(/\D/g,'');
+
+  // Guard duplicate
+  if (playedPhones.includes(raw)) {
+    hideOverlays();
+    showOverlay('overlay-already');
+    return;
+  }
+
+  playedPhones.push(raw);
+  localStorage.setItem('playedPhones', JSON.stringify(playedPhones));
+
+  if (sheetsURL) {
+    const params = new URLSearchParams({
+      timestamp: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+      name:  data.name,
+      email: data.email,
+      phone: data.phone,
+      prize: result.label,
+      event: eventName,
+    });
+    try {
+      await fetch(`${sheetsURL}?${params.toString()}`, { mode: 'no-cors' });
+    } catch(e) {
+      console.warn('[Sheets] Request failed:', e.message);
+    }
+  }
+
+  showThanks();
+}
+
+function showThanks() {
+  showOverlay('overlay-thanks');
+  if (result && result.weight > 0 && result.label !== 'Good Luck Next Time') {
+    spawnConfetti();
+  }
+  startCountdown(8);
+}
+
+let countdownTimer = null;
+function startCountdown(seconds) {
+  clearInterval(countdownTimer);
+  const circumference = 175.9;
+  const circle = document.getElementById('countdown-circle');
+  const numEl  = document.getElementById('countdown-num');
+  let s = seconds;
+
+  const update = () => {
+    numEl.textContent = s;
+    const offset = circumference * (1 - s / seconds);
+    circle.style.strokeDashoffset = offset;
+  };
+  update();
+
+  countdownTimer = setInterval(() => {
+    s--;
+    update();
+    if (s <= 0) {
+      clearInterval(countdownTimer);
+      resetForNext();
+    }
+  }, 1000);
+}
+
+function resetForNext() {
+  hideOverlays();
+  ['inp-name','inp-email','inp-phone'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('err');
+  });
+  ['err-name','err-email','err-phone'].forEach(id =>
+    document.getElementById(id).classList.remove('show')
+  );
+  result = null;
+  document.getElementById('btn-spin').disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════════════════
+function spawnConfetti() {
+  const colors = ['#FF6B00','#FFB300','#7B2FFF','#00C853','#FF1744','#00BCD4','#FFD700'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const size   = 5 + Math.random() * 11;
+    const isRect = Math.random() > 0.5;
+    el.style.cssText = [
+      `width:${size}px`,
+      `height:${isRect ? size * 0.4 : size}px`,
+      `background:${colors[i % colors.length]}`,
+      `left:${10 + Math.random() * 80}vw`,
+      `top:-20px`,
+      `border-radius:${isRect ? '2px' : '50%'}`,
+      `animation-duration:${1.5 + Math.random() * 2.5}s`,
+      `animation-delay:${Math.random() * 0.6}s`,
+      `opacity:1`,
+    ].join(';');
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════
+document.getElementById('btn-spin').addEventListener('click', doSpin);
+
+document.getElementById('btn-do-spin-again').addEventListener('click', () => {
+  hideOverlays();
+  setTimeout(doSpin, 350);
+});
+
+document.getElementById('btn-goodluck-ok').addEventListener('click', resetForNext);
+
+document.getElementById('btn-already-ok').addEventListener('click', () => {
+  hideOverlays();
+  document.getElementById('btn-spin').disabled = false;
+});
+
+document.getElementById('btn-claim').addEventListener('click', async () => {
+  const data = validate();
+  if (!data) return;
+  const btn = document.getElementById('btn-claim');
+  btn.disabled = true;
+  btn.textContent = '⏳  SUBMITTING…';
+  await submitEntry(data);
+  btn.disabled = false;
+  btn.textContent = '✅  CLAIM MY PRIZE';
+});
+
+// Config: click title 5× within 3 seconds
+let clicks = 0, clickTimer = null;
+document.getElementById('company-title').addEventListener('click', () => {
+  clicks++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => { clicks = 0; }, 3000);
+  if (clicks >= 5) {
+    clicks = 0;
+    const p = document.getElementById('config-panel');
+    p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    document.getElementById('inp-sheets-url').value  = sheetsURL;
+    document.getElementById('inp-event-name').value  = eventName;
+  }
+});
+
+document.getElementById('btn-save-config').addEventListener('click', () => {
+  sheetsURL = document.getElementById('inp-sheets-url').value.trim();
+  eventName = (document.getElementById('inp-event-name').value.trim()) || 'Piscine Event';
+  localStorage.setItem('sheetsURL', sheetsURL);
+  localStorage.setItem('eventName', eventName);
+  document.getElementById('config-panel').style.display = 'none';
+  alert('✅ Config saved! Google Sheets sync is ' + (sheetsURL ? 'ENABLED' : 'DISABLED') + '.');
+});
+
+document.getElementById('btn-clear-data').addEventListener('click', () => {
+  if (confirm('Clear ALL recorded phone numbers from this device? This cannot be undone.')) {
+    playedPhones = [];
+    localStorage.removeItem('playedPhones');
+    alert('✅ All entries cleared.');
+  }
+});
+</script>
+</body>
+</html>
