@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Spin & Win – Piscine</title>
+<title>Spin & Win – Nextera Piscine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
 
 <!--
   ╔══════════════════════════════════════════════════════════════╗
@@ -37,32 +37,44 @@
 -->
 
 <style>
-/* ───────────────────────────────────────
-   BRAND VARIABLES — swap when you have company colors
-   ─────────────────────────────────────── */
+/* ─────────────────────────────────────────
+   NEXTERA BRAND VARIABLES
+   ───────────────────────────────────────── */
 :root {
-  --brand-a:   #FF6B00;
-  --brand-b:   #FFB300;
-  --brand-glow: rgba(255, 107, 0, 0.45);
+  /* Nextera palette */
+  --mint:       #64EE98;
+  --fresh:      #41D577;
+  --mid:        #43C273;
+  --deep:       #41AA68;
+  --silver:     #BDBDBD;
 
-  --bg:        #07070F;
-  --surface:   #0D0D1E;
-  --glass:     rgba(13, 13, 30, 0.85);
-  --border:    rgba(255, 107, 0, 0.18);
-  --text:      #F0F0FF;
-  --muted:     #55558A;
+  /* Brand aliases */
+  --brand-a:    #64EE98;
+  --brand-b:    #41D577;
+  --brand-glow: rgba(100, 238, 152, 0.35);
+  --brand-mid:  #43C273;
+  --brand-deep: #41AA68;
 
-  /* Wheel segment colors */
-  --c0: #7B2FFF;
-  --c1: #B8860B;
-  --c2: #0097A7;
-  --c3: #D81B60;
-  --c4: #E65100;
-  --c5: #37474F;
-  --c6: #2E7D32;
+  /* Dark surfaces — deep forest tones */
+  --bg:         #d8f3dc;
+  --surface:    #091408;
+  --glass:      rgba(9, 20, 8, 0.88);
+  --border:     rgba(100, 238, 152, 0.16);
+  --text:       #E8F5ED;
+  --muted:      #4A7A5A;
 
-  --font-display: 'Righteous', cursive;
-  --font-body:    'Rajdhani', sans-serif;
+  /* Wheel segment colors — all green-family with contrast */
+  --c0: #1B6B3A;
+  --c1: #43C273;
+  --c2: #256640;
+  --c3: #2E9E5B;
+  --c4: #14472A;
+  --c5: #3A3A3A;
+  --c6: #41AA68;
+
+  --font-display: 'Instrument Serif', serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-body:    'DM Sans', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -75,9 +87,10 @@ html, body {
 body {
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,107,0,0.08) 0%, transparent 60%),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.02) 40px),
-    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.02) 40px);
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(65,213,119,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 80% 90%, rgba(65,170,104,0.05) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(100,238,152,0.015) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(100,238,152,0.015) 60px);
   color: var(--text);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -90,30 +103,79 @@ body {
 /* ── HEADER ── */
 header {
   position: fixed; top: 0; left: 0; right: 0;
-  padding: 14px 24px;
+  padding: 14px 28px;
   display: flex; align-items: center; justify-content: space-between;
   z-index: 10;
-  background: linear-gradient(to bottom, var(--bg) 50%, transparent);
+  background: linear-gradient(to bottom, rgba(216,243,220,0.95) 50%, #d8f3dc 95%);
+  border-bottom: 1px solid rgba(100,238,152,0.07);
 }
 
 #company-title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
   user-select: none;
 }
 
-#tagline {
-  font-size: 0.75rem;
-  color: var(--muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
+/* Nextera X logo mark */
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  flex-shrink: 0;
 }
+.logo-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.logo-text-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-name {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: #081c15;
+}
+.logo-name em {
+  color: var(--mint);
+  font-style: normal;
+}
+
+.logo-sub {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+#tagline {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#tagline::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 8px var(--mint);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
 
 /* ── MAIN ── */
 #main {
@@ -134,86 +196,90 @@ header {
 
 #pointer {
   width: 0; height: 0;
-  border-left: 14px solid transparent;
-  border-right: 14px solid transparent;
-  border-top: 30px solid var(--brand-a);
-  filter: drop-shadow(0 0 8px var(--brand-a)) drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-top: 28px solid var(--mint);
+  filter: drop-shadow(0 0 10px var(--mint)) drop-shadow(0 2px 4px rgba(0,0,0,0.9));
   z-index: 5;
-  margin-bottom: -6px;
+  margin-bottom: -5px;
 }
 
 #wheel-canvas {
   display: block;
   border-radius: 50%;
   box-shadow:
-    0 0 0 4px rgba(255,107,0,0.25),
-    0 0 40px rgba(255,107,0,0.2),
-    0 0 100px rgba(255,107,0,0.1),
-    inset 0 0 40px rgba(0,0,0,0.5);
+    0 0 0 3px rgba(100,238,152,0.2),
+    0 0 40px rgba(65,213,119,0.15),
+    0 0 90px rgba(65,194,115,0.08),
+    inset 0 0 40px rgba(0,0,0,0.6);
 }
 
 /* ── BUTTONS ── */
 .btn {
-  font-family: var(--font-display);
-  letter-spacing: 2px;
+  font-family: var(--font-mono);
+  letter-spacing: .12em;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
   text-transform: uppercase;
 }
-.btn:active { transform: scale(0.95); }
-.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn:active { transform: scale(0.96); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
 .btn-main {
-  padding: 16px 52px;
-  font-size: 1.35rem;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
-  color: #000;
-  box-shadow: 0 0 24px var(--brand-glow), 0 4px 16px rgba(0,0,0,0.5);
+  padding: 15px 52px;
+  font-size: 1.05rem;
+  background: linear-gradient(135deg, var(--mint), var(--fresh));
+  color: #061209;
+  font-weight: 700;
+  box-shadow: 0 0 28px var(--brand-glow), 0 4px 16px rgba(0,0,0,0.5);
 }
 .btn-main:not(:disabled):hover {
-  box-shadow: 0 0 40px var(--brand-glow), 0 4px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 0 44px var(--brand-glow), 0 4px 28px rgba(0,0,0,0.5);
   transform: translateY(-2px);
 }
 
 .btn-spin-again {
-  padding: 16px 44px;
-  font-size: 1.25rem;
-  background: linear-gradient(135deg, #00C853, #00E676);
-  color: #000;
-  box-shadow: 0 0 24px rgba(0,200,83,0.5);
+  padding: 15px 44px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--fresh), var(--mid));
+  color: #061209;
+  font-weight: 700;
+  box-shadow: 0 0 24px rgba(65,213,119,0.45);
   animation: pulsate 1.8s ease-in-out infinite;
   width: 100%;
 }
 @keyframes pulsate {
-  0%,100% { box-shadow: 0 0 24px rgba(0,200,83,0.4); }
-  50%      { box-shadow: 0 0 50px rgba(0,200,83,0.8); }
+  0%,100% { box-shadow: 0 0 24px rgba(65,213,119,0.35); }
+  50%      { box-shadow: 0 0 52px rgba(100,238,152,0.65); }
 }
 
 .btn-form {
-  padding: 15px 32px;
-  font-size: 1.1rem;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
-  color: #000;
+  padding: 14px 32px;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, var(--mint), var(--fresh));
+  color: #061209;
+  font-weight: 700;
   width: 100%;
   box-shadow: 0 4px 20px var(--brand-glow);
 }
 
 .btn-ghost {
   padding: 10px 20px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
 }
-.btn-ghost:hover { border-color: var(--brand-a); color: var(--brand-a); }
+.btn-ghost:hover { border-color: var(--mint); color: var(--mint); }
 
 /* ── SUBTITLE ── */
 #subtitle {
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   color: var(--muted);
-  letter-spacing: 1px;
+  letter-spacing: .14em;
   text-transform: uppercase;
 }
 
@@ -221,14 +287,14 @@ header {
 .overlay {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(7, 7, 15, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(5, 14, 9, 0.90);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 100;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: overlayIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: overlayIn 0.3s ease;
 }
 .overlay.active { display: flex; }
 
@@ -239,74 +305,92 @@ header {
 
 .modal {
   background: var(--glass);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(100,238,152,0.18);
   border-radius: 20px;
   padding: 40px 36px;
   width: 100%;
   max-width: 420px;
   text-align: center;
-  box-shadow: 0 0 60px rgba(255,107,0,0.15), 0 24px 64px rgba(0,0,0,0.6);
+  box-shadow: 0 0 60px rgba(65,213,119,0.1), 0 24px 64px rgba(0,0,0,0.7);
   animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+.modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(100,238,152,0.4), transparent);
 }
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  from { opacity: 0; transform: scale(0.86) translateY(18px); }
   to   { opacity: 1; transform: scale(1)   translateY(0); }
 }
 
-.modal-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 12px; }
+.modal-icon { font-size: 3.2rem; line-height: 1; margin-bottom: 14px; }
 .modal h2 {
   font-family: var(--font-display);
   font-size: 2rem;
-  letter-spacing: 2px;
+  font-weight: 400;
+  letter-spacing: .02em;
   margin-bottom: 8px;
+  color: var(--text);
 }
+.modal h2 i { font-style: italic; color: var(--mint); }
 .modal p {
   color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.65;
   margin-bottom: 20px;
 }
 
 .prize-badge {
   display: inline-block;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
-  color: #000;
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--mint), var(--fresh));
+  color: #061209;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .1em;
   padding: 10px 24px;
-  border-radius: 6px;
-  margin: 8px 0 20px;
-  box-shadow: 0 0 24px var(--brand-glow);
+  border-radius: 8px;
+  margin: 8px 0 22px;
+  box-shadow: 0 0 28px var(--brand-glow);
 }
 
 /* ── FORM ── */
 .field { margin-bottom: 14px; text-align: left; }
 .field label {
   display: block;
-  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 6px;
 }
 .field input {
   width: 100%;
-  padding: 13px 16px;
-  background: rgba(255,255,255,0.04);
-  border: 1.5px solid var(--border);
+  padding: 12px 16px;
+  background: rgba(100,238,152,0.04);
+  border: 1px solid rgba(100,238,152,0.14);
   border-radius: 8px;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.field input:focus  { border-color: var(--brand-a); }
-.field input.err    { border-color: #FF1744; }
+.field input:focus  {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 3px rgba(100,238,152,0.1);
+}
+.field input.err    { border-color: #FF5252; }
 .field .errmsg {
-  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
   color: #FF5252;
   margin-top: 5px;
   display: none;
@@ -316,28 +400,26 @@ header {
 /* ── THANK YOU / COUNTDOWN ── */
 #countdown-ring {
   position: relative;
-  width: 64px; height: 64px;
+  width: 60px; height: 60px;
   margin: 16px auto 8px;
 }
 #countdown-ring svg { transform: rotate(-90deg); }
 #countdown-ring circle {
   fill: none;
-  stroke-width: 4;
+  stroke-width: 3.5;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear;
 }
-#countdown-ring .track { stroke: rgba(255,255,255,0.1); }
-#countdown-ring .progress { stroke: var(--brand-a); }
+#countdown-ring .track { stroke: rgba(100,238,152,0.1); }
+#countdown-ring .progress { stroke: var(--mint); }
 #countdown-num {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--brand-b);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--mint);
 }
-
-/* ── GOOD LUCK ── */
-#overlay-goodluck .modal h2 { color: var(--muted); }
 
 /* ── CONFIG PANEL ── */
 #config-panel {
@@ -350,18 +432,27 @@ header {
   padding: 22px 20px;
   z-index: 200;
   width: 320px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+#config-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--mint), transparent);
 }
 #config-panel h3 {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: 2px;
-  color: var(--brand-a);
-  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--mint);
+  margin-bottom: 16px;
 }
 #config-panel label {
-  font-size: 0.7rem;
-  letter-spacing: 1.5px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--muted);
   display: block;
@@ -370,41 +461,44 @@ header {
 #config-panel input {
   width: 100%;
   padding: 9px 12px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(100,238,152,0.04);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   outline: none;
   margin-bottom: 12px;
+  font-family: var(--font-mono);
 }
 .cfg-row { display: flex; gap: 8px; margin-top: 4px; }
 .btn-save-cfg {
   flex: 2;
   padding: 10px 16px;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b));
-  color: #000;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--mint), var(--fresh));
+  color: #061209;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
   border: none; border-radius: 6px; cursor: pointer;
 }
 .btn-clear-cfg {
   flex: 1;
   padding: 10px;
-  background: rgba(255,23,68,0.15);
+  background: rgba(255,82,82,0.1);
   color: #FF5252;
-  border: 1px solid rgba(255,23,68,0.3);
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  letter-spacing: 1px;
+  border: 1px solid rgba(255,82,82,0.25);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: .08em;
   border-radius: 6px; cursor: pointer;
 }
 #config-hint {
-  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
   color: var(--muted);
-  margin-top: 10px;
-  line-height: 1.5;
+  margin-top: 12px;
+  line-height: 1.6;
 }
 
 /* ── PARTICLES ── */
@@ -422,7 +516,30 @@ header {
 <body>
 
 <header>
-  <div id="company-title">🎯 SPIN &amp; WIN</div>
+  <div id="company-title">
+    <!-- Nextera X logo SVG -->
+    <div class="logo-mark">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="xgrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#64EE98"/>
+            <stop offset="100%" stop-color="#41D577"/>
+          </linearGradient>
+        </defs>
+        <!-- X shape: two crossing rounded bars -->
+        <rect x="10" y="40" width="80" height="18" rx="9"
+              transform="rotate(-45 50 50)"
+              fill="url(#xgrad)"/>
+        <rect x="10" y="40" width="80" height="18" rx="9"
+              transform="rotate(45 50 50)"
+              fill="url(#xgrad)"/>
+      </svg>
+    </div>
+    <div class="logo-text-wrap">
+      <div class="logo-name">NEX<em>T</em>ERA</div>
+      <div class="logo-sub">01 Coding · Cairo</div>
+    </div>
+  </div>
   <div id="tagline">Piscine Edition</div>
 </header>
 
@@ -432,16 +549,16 @@ header {
     <canvas id="wheel-canvas" width="460" height="460"></canvas>
   </div>
   <p id="subtitle">Spin the wheel · Win a Piscine discount</p>
-  <button class="btn btn-main" id="btn-spin">🎰 &nbsp;SPIN THE WHEEL</button>
+  <button class="btn btn-main" id="btn-spin">SPIN THE WHEEL →</button>
 </div>
 
 <!-- ── SPIN AGAIN OVERLAY ── -->
 <div class="overlay" id="overlay-spin-again">
   <div class="modal">
     <div class="modal-icon" style="animation:bounceIcon 0.7s ease-in-out infinite alternate">🔄</div>
-    <h2 style="background:linear-gradient(135deg,#00C853,#00E676);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent">SPIN AGAIN!</h2>
+    <h2>Spin <i>Again!</i></h2>
     <p>The wheel is calling your name — try one more time!</p>
-    <button class="btn btn-spin-again" id="btn-do-spin-again">SPIN AGAIN 🎰</button>
+    <button class="btn btn-spin-again" id="btn-do-spin-again">SPIN AGAIN →</button>
   </div>
 </div>
 <style>
@@ -455,7 +572,7 @@ header {
 <div class="overlay" id="overlay-form">
   <div class="modal">
     <div class="modal-icon">🎉</div>
-    <h2>YOU WON!</h2>
+    <h2>You <i>Won!</i></h2>
     <div class="prize-badge" id="form-prize-label">—</div>
     <p style="margin-bottom:16px">Enter your details below to claim your prize:</p>
 
@@ -475,7 +592,7 @@ header {
       <div class="errmsg" id="err-phone">Please enter your phone number (min 8 digits)</div>
     </div>
 
-    <button class="btn btn-form" id="btn-claim">✅ &nbsp;CLAIM MY PRIZE</button>
+    <button class="btn btn-form" id="btn-claim">CLAIM MY PRIZE →</button>
   </div>
 </div>
 
@@ -483,10 +600,10 @@ header {
 <div class="overlay" id="overlay-goodluck">
   <div class="modal">
     <div class="modal-icon">🌟</div>
-    <h2>GOOD LUCK!</h2>
+    <h2>Good <i>Luck!</i></h2>
     <p style="font-size:1rem;color:var(--text);margin-bottom:6px">Better luck next time!</p>
     <p>Our Piscine program is an amazing challenge — even without a discount it's worth every moment. Come ask us about it!</p>
-    <button class="btn btn-form" id="btn-goodluck-ok" style="margin-top:8px">GOT IT 👍</button>
+    <button class="btn btn-form" id="btn-goodluck-ok" style="margin-top:8px">GOT IT →</button>
   </div>
 </div>
 
@@ -494,7 +611,7 @@ header {
 <div class="overlay" id="overlay-thanks">
   <div class="modal">
     <div class="modal-icon" id="thanks-icon">✅</div>
-    <h2 style="background:linear-gradient(135deg,var(--brand-a),var(--brand-b));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent">ALL SET!</h2>
+    <h2>All <i>Set!</i></h2>
     <p>Your prize has been registered. Our team will reach out soon — good luck with the Piscine!</p>
     <div id="countdown-ring">
       <svg viewBox="0 0 64 64" width="64" height="64">
@@ -504,7 +621,7 @@ header {
       </svg>
       <div id="countdown-num">8</div>
     </div>
-    <p style="font-size:0.78rem;margin-top:4px">Resetting for next visitor…</p>
+    <p style="font-size:0.75rem;margin-top:4px;font-family:var(--font-mono);letter-spacing:.06em;">Resetting for next visitor…</p>
   </div>
 </div>
 
@@ -512,26 +629,26 @@ header {
 <div class="overlay" id="overlay-already">
   <div class="modal">
     <div class="modal-icon">⚠️</div>
-    <h2 style="color:#FF5252">ALREADY PLAYED</h2>
+    <h2 style="color:#FF5252">Already Played</h2>
     <p>This phone number has already been used to claim a prize. Each person gets one spin!</p>
-    <button class="btn btn-form" id="btn-already-ok" style="background:#FF5252;box-shadow:0 0 20px rgba(255,82,82,0.3)">OK</button>
+    <button class="btn btn-form" id="btn-already-ok" style="background:#FF5252;box-shadow:0 0 20px rgba(255,82,82,0.3)">OK →</button>
   </div>
 </div>
 
 <!-- ── CONFIG PANEL (staff-only, 5× title click) ── -->
 <div id="config-panel">
-  <h3>⚙ STAFF CONFIG</h3>
+  <h3>⚙ Staff Config</h3>
   <label>Google Apps Script URL</label>
-  <input id="inp-sheets-url" type="url" placeholder="https://script.google.com/a/macros/nextera.education/s/AKfycbyGwA9SuMPw5iCx_rFIgPiXH-Kh5dWvD4j6zuN0WiaE8ntPRyafkuHR4ODe2HAQ3zMM/exec">
-  <label>Carrer Summit</label>
-  <input id="inp-event-name" type="text" placeholder="Carrer Summit 2026">
+  <input id="inp-sheets-url" type="url" placeholder="https://script.google.com/macros/s/…/exec">
+  <label>Event Name</label>
+  <input id="inp-event-name" type="text" placeholder="Piscine Cairo 2026">
   <div class="cfg-row">
     <button class="btn-save-cfg" id="btn-save-config">SAVE</button>
     <button class="btn-clear-cfg" id="btn-clear-data">CLEAR</button>
   </div>
   <p id="config-hint">
-    Paste your Apps Script Web App URL above to enable live Google Sheets sync.<br>
-    Click the title 5× to open / close this panel.<br>
+    Paste your Apps Script URL to enable live Google Sheets sync.<br>
+    Click the Nextera logo 5× to open / close this panel.<br>
     CLEAR removes all recorded phone numbers from this device.
   </p>
 </div>
@@ -540,21 +657,21 @@ header {
 'use strict';
 
 // ═══════════════════════════════════════════════════════
-// SEGMENTS CONFIG
+// SEGMENTS CONFIG — Nextera palette wheel colors
 // ═══════════════════════════════════════════════════════
 const SEGMENTS = [
-  { label:'10% Discount',        badge:'10% OFF',      weight:20, color:'#7B2FFF', dark:'#5B1FCC' },
-  { label:'Free Piscine! 🌟',    badge:'FREE PISCINE', weight:0,  color:'#C8A000', dark:'#9A7A00' },
-  { label:'20% Discount',        badge:'20% OFF',      weight:8,  color:'#0097A7', dark:'#006978' },
-  { label:'50% Discount',        badge:'50% OFF',      weight:2,  color:'#D81B60', dark:'#A4004F' },
-  { label:'5% Discount',         badge:'5% OFF',       weight:30, color:'#E65100', dark:'#BF360C' },
-  { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:30, color:'#37474F', dark:'#263238' },
-  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:10, color:'#2E7D32', dark:'#1B5E20' },
+  { label:'10% Discount',        badge:'10% OFF',      weight:20, color:'#1B6B3A', dark:'#124826' },
+  { label:'Free Piscine! 🌟',    badge:'FREE PISCINE', weight:0,  color:'#43C273', dark:'#2E9E5B' },
+  { label:'20% Discount',        badge:'20% OFF',      weight:8,  color:'#2E9E5B', dark:'#1E7040' },
+  { label:'50% Discount',        badge:'50% OFF',      weight:2,  color:'#41D577', dark:'#2DB860' },
+  { label:'5% Discount',         badge:'5% OFF',       weight:25, color:'#14472A', dark:'#0A2D1A' },
+  { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:30, color:'#2A2A2A', dark:'#1A1A1A' },
+  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:15, color:'#41AA68', dark:'#2D7A4A' },
 ];
 
-const N     = SEGMENTS.length;
-const ARC   = (2 * Math.PI) / N;
-const TOP   = -Math.PI / 2;   // pointer angle in canvas coords
+const N   = SEGMENTS.length;
+const ARC = (2 * Math.PI) / N;
+const TOP = -Math.PI / 2;
 
 // ═══════════════════════════════════════════════════════
 // STATE
@@ -579,12 +696,12 @@ const R  = CX - 14;
 function drawWheel(rot) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Outer ring glow
-  const outerGlow = ctx.createRadialGradient(CX, CY, R-2, CX, CY, R+14);
-  outerGlow.addColorStop(0, 'rgba(255,107,0,0.25)');
+  // Outer ring glow — mint
+  const outerGlow = ctx.createRadialGradient(CX, CY, R - 2, CX, CY, R + 16);
+  outerGlow.addColorStop(0, 'rgba(100,238,152,0.18)');
   outerGlow.addColorStop(1, 'transparent');
   ctx.beginPath();
-  ctx.arc(CX, CY, R + 14, 0, Math.PI * 2);
+  ctx.arc(CX, CY, R + 16, 0, Math.PI * 2);
   ctx.fillStyle = outerGlow;
   ctx.fill();
 
@@ -600,85 +717,107 @@ function drawWheel(rot) {
     ctx.arc(CX, CY, R, sa, ea);
     ctx.closePath();
 
-   const grad = ctx.createLinearGradient(0, 0, R, 0); 
-grad.addColorStop(0, seg.color);
-grad.addColorStop(1, seg.dark);
-ctx.fillStyle = grad;
+    const grad = ctx.createLinearGradient(
+      CX + Math.cos(mid) * 30, CY + Math.sin(mid) * 30,
+      CX + Math.cos(mid) * R,  CY + Math.sin(mid) * R
+    );
+    grad.addColorStop(0, seg.color);
+    grad.addColorStop(1, seg.dark);
+    ctx.fillStyle = grad;
     ctx.fill();
 
-    // Divider line
-    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-    ctx.lineWidth = 2.5;
+    // Subtle divider
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Thin mint-green highlight on every other segment border
+    ctx.strokeStyle = 'rgba(100,238,152,0.08)';
+    ctx.lineWidth = 0.5;
     ctx.stroke();
 
     // Text
-    // Replace the Text section inside your for-loop with this:
-ctx.save();
-ctx.translate(CX, CY);
-ctx.rotate(mid);
+    ctx.save();
+    ctx.translate(CX, CY);
+    ctx.rotate(mid);
 
-// 1. Draw Emoji (Right side of the segment)
-ctx.font = '22px serif';
-ctx.textAlign = 'right';
-ctx.textBaseline = 'middle';
-ctx.fillStyle = '#FFFFFF';
-ctx.fillText(getEmoji(seg), R - 20, 0);
+    // Emoji right
+    ctx.font = '20px serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillText(getEmoji(seg), R - 18, 0);
 
-// 2. Draw Label (Left side of the segment)
-const fontSize = seg.badge.length > 10 ? 12 : 14;
-ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
-ctx.textAlign = 'left';
-ctx.textBaseline = 'middle';
-ctx.fillStyle = '#FFFFFF';
-// Add a small shadow for readability
-ctx.shadowColor = "rgba(0,0,0,0.5)";
-ctx.shadowBlur = 4;
-ctx.fillText(seg.badge, 45, 0); // 45px from center to avoid the center cap
+    // Label left
+    const fontSize = seg.badge.length > 10 ? 11 : 13;
+    ctx.font = `700 ${fontSize}px "JetBrains Mono", monospace`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor  = 'rgba(0,0,0,0.7)';
+    ctx.shadowBlur   = 5;
+    // Good Luck gets silver text; Free Piscine gets mint; others white
+    if (seg.label.includes('Good Luck')) {
+      ctx.fillStyle = '#BDBDBD';
+    } else if (seg.weight === 0) {
+      ctx.fillStyle = '#64EE98';
+    } else {
+      ctx.fillStyle = '#FFFFFF';
+    }
+    ctx.fillText(seg.badge, 44, 0);
+    ctx.shadowBlur = 0;
 
-ctx.restore();
+    ctx.restore();
   }
 
-  // Center cap
-  const capGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, 36);
-  capGrad.addColorStop(0, '#1A0A30');
-  capGrad.addColorStop(1, '#07070F');
+  // Center cap — deep green circle
+  const capGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, 38);
+  capGrad.addColorStop(0, '#0D2418');
+  capGrad.addColorStop(1, '#050E09');
   ctx.beginPath();
-  ctx.arc(CX, CY, 36, 0, Math.PI * 2);
+  ctx.arc(CX, CY, 38, 0, Math.PI * 2);
   ctx.fillStyle = capGrad;
   ctx.fill();
 
+  // Cap ring — mint
   ctx.beginPath();
-  ctx.arc(CX, CY, 36, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,107,0,0.5)';
-  ctx.lineWidth = 3;
+  ctx.arc(CX, CY, 38, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(100,238,152,0.45)';
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  ctx.font      = '24px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.shadowColor  = 'rgba(255,107,0,0.8)';
-  ctx.shadowBlur   = 10;
-  ctx.fillStyle    = '#FFF';
-  ctx.fillText('🎯', CX, CY);
-  ctx.shadowBlur   = 0;
+  // Inner X logo on cap
+  drawCapX();
+}
+
+function drawCapX() {
+  ctx.save();
+  ctx.translate(CX, CY);
+  const s = 18;
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+
+  const xGrad = ctx.createLinearGradient(-s, -s, s, s);
+  xGrad.addColorStop(0, '#64EE98');
+  xGrad.addColorStop(1, '#41D577');
+  ctx.strokeStyle = xGrad;
+
+  ctx.beginPath();
+  ctx.moveTo(-s, -s); ctx.lineTo(s, s);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(s, -s); ctx.lineTo(-s, s);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function getEmoji(seg) {
-  if (seg.weight === 0)       return '🏆';
-  if (seg.label.includes('50'))  return '💎';
-  if (seg.label.includes('20'))  return '🎁';
-  if (seg.label.includes('10'))  return '🎫';
-  if (seg.label.includes('5%'))  return '🎟';
-  if (seg.label.includes('Spin')) return '🔄';
+  if (seg.weight === 0)             return '🏆';
+  if (seg.label.includes('50'))     return '💎';
+  if (seg.label.includes('20'))     return '🎁';
+  if (seg.label.includes('10'))     return '🎫';
+  if (seg.label.includes('5%'))     return '🎟';
+  if (seg.label.includes('Spin'))   return '🔄';
   return '🌟';
-}
-
-function lighten(hex, amt) {
-  const n = parseInt(hex.replace('#',''), 16);
-  const r = Math.min(255, (n >> 16) + amt);
-  const g = Math.min(255, ((n >> 8) & 0xff) + amt);
-  const b = Math.min(255, (n & 0xff) + amt);
-  return `rgb(${r},${g},${b})`;
 }
 
 // Initial draw
@@ -707,10 +846,9 @@ function doSpin() {
   document.getElementById('btn-spin').disabled = true;
   resumeAudio();
 
-  const winIdx = pickWinner();
-  result = SEGMENTS[winIdx];
+  const winIdx  = pickWinner();
+  result        = SEGMENTS[winIdx];
 
-  // Calculate how much to rotate so winIdx lands under pointer (TOP)
   const segMid  = winIdx * ARC + ARC / 2;
   const jitter  = (Math.random() - 0.5) * ARC * 0.55;
   const target  = ((TOP - segMid - jitter) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
@@ -718,19 +856,14 @@ function doSpin() {
   let   extra   = target - current;
   if (extra < 0) extra += Math.PI * 2;
 
-  const fullSpins = (7 + Math.floor(Math.random() * 3)) * Math.PI * 2;
+  const fullSpins  = (7 + Math.floor(Math.random() * 3)) * Math.PI * 2;
   const totalDelta = fullSpins + extra;
-  const startRot  = rotation;
-  const endRot    = rotation + totalDelta;
-  const duration  = 5500 + Math.random() * 1200;
-  const startTime = performance.now();
+  const startRot   = rotation;
+  const duration   = 5500 + Math.random() * 1200;
+  const startTime  = performance.now();
+  let lastTick     = rotation;
 
-  let lastTick = rotation;
-
-  function easeOut(t) {
-    // quartic ease-out for satisfying deceleration
-    return 1 - Math.pow(1 - t, 4);
-  }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
 
   function frame(now) {
     const t = Math.min((now - startTime) / duration, 1);
@@ -738,7 +871,6 @@ function doSpin() {
     rotation = startRot + e * totalDelta;
     drawWheel(rotation);
 
-    // Tick every segment crossing (speed-aware)
     if (Math.abs(rotation - lastTick) >= ARC) {
       playTick(Math.max(0.08, 1 - t));
       lastTick = rotation;
@@ -747,7 +879,7 @@ function doSpin() {
     if (t < 1) {
       requestAnimationFrame(frame);
     } else {
-      rotation = endRot;
+      rotation = startRot + totalDelta;
       drawWheel(rotation);
       spinning = false;
       onResult();
@@ -771,10 +903,9 @@ function onResult() {
 }
 
 // ═══════════════════════════════════════════════════════
-// AUDIO (Web Audio API)
+// AUDIO
 // ═══════════════════════════════════════════════════════
 let audioCtx = null;
-
 function resumeAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -787,8 +918,8 @@ function playTick(vol = 1) {
     const g = audioCtx.createGain();
     o.connect(g); g.connect(audioCtx.destination);
     o.type = 'triangle';
-    o.frequency.value = 500 + Math.random() * 300;
-    g.gain.setValueAtTime(vol * 0.25, audioCtx.currentTime);
+    o.frequency.value = 480 + Math.random() * 280;
+    g.gain.setValueAtTime(vol * 0.22, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
     o.start(audioCtx.currentTime);
     o.stop(audioCtx.currentTime + 0.04);
@@ -799,7 +930,6 @@ function playSound(type) {
   if (!audioCtx) return;
   try {
     if (type === 'win') {
-      // Ascending happy arpeggio
       [523, 659, 784, 1047].forEach((freq, i) => {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
@@ -807,31 +937,29 @@ function playSound(type) {
         o.type = 'sine'; o.frequency.value = freq;
         const t = audioCtx.currentTime + i * 0.14;
         g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.35, t + 0.05);
+        g.gain.linearRampToValueAtTime(0.32, t + 0.05);
         g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
         o.start(t); o.stop(t + 0.5);
       });
     } else if (type === 'spin-again') {
-      // Fast rising notes
       [659, 784, 880, 1047, 1175].forEach((freq, i) => {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.connect(g); g.connect(audioCtx.destination);
         o.type = 'sine'; o.frequency.value = freq;
         const t = audioCtx.currentTime + i * 0.08;
-        g.gain.setValueAtTime(0.3, t);
+        g.gain.setValueAtTime(0.28, t);
         g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
         o.start(t); o.stop(t + 0.25);
       });
     } else {
-      // Sad descending trombone-ish
       [400, 360, 300].forEach((freq, i) => {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.connect(g); g.connect(audioCtx.destination);
         o.type = 'sawtooth'; o.frequency.value = freq;
         const t = audioCtx.currentTime + i * 0.2;
-        g.gain.setValueAtTime(0.18, t);
+        g.gain.setValueAtTime(0.15, t);
         g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
         o.start(t); o.stop(t + 0.3);
       });
@@ -874,8 +1002,6 @@ function validate() {
 
 async function submitEntry(data) {
   const raw = data.phone.replace(/\D/g,'');
-
-  // Guard duplicate
   if (playedPhones.includes(raw)) {
     hideOverlays();
     showOverlay('overlay-already');
@@ -919,21 +1045,15 @@ function startCountdown(seconds) {
   const circle = document.getElementById('countdown-circle');
   const numEl  = document.getElementById('countdown-num');
   let s = seconds;
-
   const update = () => {
     numEl.textContent = s;
-    const offset = circumference * (1 - s / seconds);
-    circle.style.strokeDashoffset = offset;
+    circle.style.strokeDashoffset = circumference * (1 - s / seconds);
   };
   update();
-
   countdownTimer = setInterval(() => {
     s--;
     update();
-    if (s <= 0) {
-      clearInterval(countdownTimer);
-      resetForNext();
-    }
+    if (s <= 0) { clearInterval(countdownTimer); resetForNext(); }
   }, 1000);
 }
 
@@ -951,12 +1071,12 @@ function resetForNext() {
 }
 
 // ═══════════════════════════════════════════════════════
-// CONFETTI
+// CONFETTI — mint/green palette
 // ═══════════════════════════════════════════════════════
 function spawnConfetti() {
-  const colors = ['#FF6B00','#FFB300','#7B2FFF','#00C853','#FF1744','#00BCD4','#FFD700'];
+  const colors = ['#64EE98','#41D577','#43C273','#41AA68','#BDBDBD','#ffffff','#2db88a'];
   for (let i = 0; i < 80; i++) {
-    const el = document.createElement('div');
+    const el   = document.createElement('div');
     el.className = 'particle';
     const size   = 5 + Math.random() * 11;
     const isRect = Math.random() > 0.5;
@@ -980,31 +1100,27 @@ function spawnConfetti() {
 // EVENT LISTENERS
 // ═══════════════════════════════════════════════════════
 document.getElementById('btn-spin').addEventListener('click', doSpin);
-
 document.getElementById('btn-do-spin-again').addEventListener('click', () => {
   hideOverlays();
   setTimeout(doSpin, 350);
 });
-
 document.getElementById('btn-goodluck-ok').addEventListener('click', resetForNext);
-
 document.getElementById('btn-already-ok').addEventListener('click', () => {
   hideOverlays();
   document.getElementById('btn-spin').disabled = false;
 });
-
 document.getElementById('btn-claim').addEventListener('click', async () => {
   const data = validate();
   if (!data) return;
   const btn = document.getElementById('btn-claim');
   btn.disabled = true;
-  btn.textContent = '⏳  SUBMITTING…';
+  btn.textContent = 'SUBMITTING…';
   await submitEntry(data);
   btn.disabled = false;
-  btn.textContent = '✅  CLAIM MY PRIZE';
+  btn.textContent = 'CLAIM MY PRIZE →';
 });
 
-// Config: click title 5× within 3 seconds
+// Config: click logo 5× within 3 seconds
 let clicks = 0, clickTimer = null;
 document.getElementById('company-title').addEventListener('click', () => {
   clicks++;
@@ -1014,8 +1130,8 @@ document.getElementById('company-title').addEventListener('click', () => {
     clicks = 0;
     const p = document.getElementById('config-panel');
     p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    document.getElementById('inp-sheets-url').value  = sheetsURL;
-    document.getElementById('inp-event-name').value  = eventName;
+    document.getElementById('inp-sheets-url').value = sheetsURL;
+    document.getElementById('inp-event-name').value = eventName;
   }
 });
 
@@ -1025,14 +1141,14 @@ document.getElementById('btn-save-config').addEventListener('click', () => {
   localStorage.setItem('sheetsURL', sheetsURL);
   localStorage.setItem('eventName', eventName);
   document.getElementById('config-panel').style.display = 'none';
-  alert('✅ Config saved! Google Sheets sync is ' + (sheetsURL ? 'ENABLED' : 'DISABLED') + '.');
+  alert('Config saved! Google Sheets sync is ' + (sheetsURL ? 'ENABLED' : 'DISABLED') + '.');
 });
 
 document.getElementById('btn-clear-data').addEventListener('click', () => {
   if (confirm('Clear ALL recorded phone numbers from this device? This cannot be undone.')) {
     playedPhones = [];
     localStorage.removeItem('playedPhones');
-    alert('✅ All entries cleared.');
+    alert('All entries cleared.');
   }
 });
 </script>
