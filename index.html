@@ -664,9 +664,9 @@ const SEGMENTS = [
   { label:'Free Piscine! 🌟',    badge:'FREE PISCINE', weight:0,  color:'#43C273', dark:'#2E9E5B' },
   { label:'20% Discount',        badge:'20% OFF',      weight:8,  color:'#2E9E5B', dark:'#1E7040' },
   { label:'50% Discount',        badge:'50% OFF',      weight:2,  color:'#41D577', dark:'#2DB860' },
-  { label:'5% Discount',         badge:'5% OFF',       weight:25, color:'#14472A', dark:'#0A2D1A' },
+  { label:'5% Discount',         badge:'5% OFF',       weight:30, color:'#14472A', dark:'#0A2D1A' },
   { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:30, color:'#2A2A2A', dark:'#1A1A1A' },
-  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:15, color:'#41AA68', dark:'#2D7A4A' },
+  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:10, color:'#41AA68', dark:'#2D7A4A' },
 ];
 
 const N   = SEGMENTS.length;
@@ -894,6 +894,19 @@ function onResult() {
     showOverlay('overlay-spin-again');
   } else if (result.label === 'Good Luck Next Time') {
     playSound('lose');
+    // Log Good Luck spins to Sheets too (no contact info — just the result)
+    if (sheetsURL) {
+      const url = sheetsURL.includes('?') ? sheetsURL + '&' : sheetsURL + '?';
+      const params = new URLSearchParams({
+        ts:          new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+        playerName:  '—',
+        playerEmail: '—',
+        playerPhone: '—',
+        prize:       'Good Luck Next Time',
+        event:       eventName,
+      });
+      fetch(url + params.toString(), { mode: 'no-cors' }).catch(() => {});
+    }
     showOverlay('overlay-goodluck');
   } else {
     playSound('win');
@@ -1012,16 +1025,18 @@ async function submitEntry(data) {
   localStorage.setItem('playedPhones', JSON.stringify(playedPhones));
 
   if (sheetsURL) {
+    // Build URL safely — avoid reserved keys like 'name', 'email', 'timestamp'
+    const url = sheetsURL.includes('?') ? sheetsURL + '&' : sheetsURL + '?';
     const params = new URLSearchParams({
-      timestamp: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-      name:  data.name,
-      email: data.email,
-      phone: data.phone,
-      prize: result.label,
-      event: eventName,
+      ts:          new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+      playerName:  data.name,
+      playerEmail: data.email,
+      playerPhone: data.phone,
+      prize:       result ? result.label : '—',
+      event:       eventName,
     });
     try {
-      await fetch(`${sheetsURL}?${params.toString()}`, { mode: 'no-cors' });
+      await fetch(url + params.toString(), { mode: 'no-cors' });
     } catch(e) {
       console.warn('[Sheets] Request failed:', e.message);
     }
