@@ -269,10 +269,10 @@ header {
     </div>
     <div class="logo-text-wrap">
       <div class="logo-name">NEX<em>T</em>ERA</div>
-      <div class="logo-sub">01 Coding · Cairo</div>
+      <div class="logo-sub">IoT Innovation challenge · Cairo</div>
     </div>
   </div>
-  <div id="tagline">Piscine Edition</div>
+  <div id="tagline">Event Edition</div>
 </header>
 
 <div id="main">
@@ -280,7 +280,7 @@ header {
     <div id="pointer"></div>
     <canvas id="wheel-canvas" width="460" height="460"></canvas>
   </div>
-  <p id="subtitle">Spin the wheel · Win a Piscine discount</p>
+  <p id="subtitle">Spin the wheel · Win a Challenge discount</p>
   <button class="btn btn-main" id="btn-spin">SPIN THE WHEEL →</button>
 </div>
 
@@ -330,7 +330,7 @@ header {
     <div class="modal-icon">🌟</div>
     <h2>Good <i>Luck!</i></h2>
     <p style="font-size:1rem;color:var(--text);margin-bottom:6px">Better luck next time!</p>
-    <p>Our Piscine program is an amazing challenge — even without a discount it's worth every moment. Come ask us about it!</p>
+    <p>Our Challenge program is an amazing challenge — even without a discount it's worth every moment. Come ask us about it!</p>
     <button class="btn btn-form" id="btn-goodluck-ok" style="margin-top:8px">GOT IT →</button>
   </div>
 </div>
@@ -339,7 +339,7 @@ header {
   <div class="modal">
     <div class="modal-icon" id="thanks-icon">✅</div>
     <h2>All <i>Set!</i></h2>
-    <p>Your prize has been registered. Our team will reach out soon — good luck with the Piscine!</p>
+    <p>Your prize has been registered. Our team will reach out soon — good luck with the Challenge!</p>
     <div id="countdown-ring">
       <svg viewBox="0 0 64 64" width="64" height="64">
         <circle class="track" cx="32" cy="32" r="28"/>
@@ -371,19 +371,19 @@ header {
 // ✅ HARDCODED CONFIG — no setup needed
 // ═══════════════════════════════════════════════════════
 const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbwnL9_2HALSlycVmrnj2_b5RRo3VJlubwv34D3nImDHll-X2M9KLxCsbBjtTkA-rRbU/exec';
-const EVENT_NAME  = 'Piscine Event';
+const EVENT_NAME  = 'Challenge Event';
 
 // ═══════════════════════════════════════════════════════
 // SEGMENTS CONFIG
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 const SEGMENTS = [
-  { label:'10% Discount',        badge:'10% OFF',      weight:40, color:'#1B6B3A', dark:'#124826' },
-  { label:'Free Piscine! 🌟',    badge:'FREE PISCINE', weight:0,  color:'#43C273', dark:'#2E9E5B' },
+  { label:'10% Discount',        badge:'10% OFF',      weight:30, color:'#1B6B3A', dark:'#124826' },
+  { label:'Free Challenge! 🌟',    badge:'FREE CHALLENGE', weight:0,  color:'#43C273', dark:'#2E9E5B' },
   { label:'20% Discount',        badge:'20% OFF',      weight:15,  color:'#2E9E5B', dark:'#1E7040' },
-  { label:'50% Discount',        badge:'50% OFF',      weight:5,  color:'#41D577', dark:'#2DB860' },
+  { label:'50% Discount',        badge:'50% OFF',      weight:0,  color:'#41D577', dark:'#2DB860' },
   { label:'5% Discount',         badge:'5% OFF',       weight:30, color:'#14472A', dark:'#0A2D1A' },
-  { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:0, color:'#2A2A2A', dark:'#1A1A1A' },
-  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:10, color:'#41AA68', dark:'#2D7A4A' },
+  { label:'Good Luck Next Time', badge:'GOOD LUCK',    weight:10, color:'#2A2A2A', dark:'#1A1A1A' },
+  { label:'Spin Again',          badge:'SPIN AGAIN',   weight:15, color:'#41AA68', dark:'#2D7A4A' },
 ];
 
 const N   = SEGMENTS.length;
